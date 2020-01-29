@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Tab选项卡</title>
+</head>
+<style>
+  .container {
+    margin: 30px auto;
+    padding: 20px;
+    max-width: 800px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.8);
+  }
+
+  .tab-header {
+    position: relative;
+    display: flex;
+    margin-bottom: 15px;
+    line-height: 30px;
+    font-size: 13px;
+    font-weight: 1000;
+    color: rgba(20, 20, 20, 1);
+    border-bottom: 3px solid rgba(200, 200, 200, 1);
+  }
+
+  .tab-header .tab-item {
+    margin-right: 40px;
+    margin-bottom: -3px;
+    cursor: pointer;
+  }
+
+  .tab-header .tab-item.active {
+    color: rgba(0, 150, 255, 0.8);
+  }
+
+  .tab-header .line {
+    position: absolute;
+    top: 100%;
+    width: 50px;
+    height: 3px;
+    transform: translateX();
+    transition: all .4s;
+    background-color: rgba(0, 150, 255, 0.8);
+  }
+
+  .tab-content .tab-panel {
+    display: none;
+    margin: 15px auto;
+    font-size: 15px;
+  }
+
+  .tab-content .tab-panel.active {
+    display: block;
+  }
+</style>
+
+<body>
+  <div class="container">
+    <h2>Tab选项卡</h2>
+    <div class="tabs">
+      <div class="tab-header">
+        <span class="tab-item active">用户管理</span>
+        <span class="tab-item">配置管理</span>
+        <span class="tab-item">角色管理</span>
+        <span class="tab-item">定时任务</span>
+        <span class="line"></span>
+      </div>
+      <div class="tab-content">
+        <div class="tab-panel active">用户管理</div>
+        <div class="tab-panel">配置管理</div>
+        <div class="tab-panel">角色管理</div>
+        <div class="tab-panel">定时任务</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+<script>
+
+  //定义$，获取页面节点
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+
+  //多次用到$$('.tabs .tab-item'),直接定义成简单变量使用
+  const $$tabItems = $$('.tabs .tab-item');
+  //多次用到$$('.tabs .tab-panel'),直接定义成简单变量使用
+  const $$tabPanels = $$('.tabs .tab-panel');
+
+  //得到移动线
+  const $line = $('.tab-header .line');
+
+  //保证一开始的宽度正确
+  $line.style.width = $$tabItems[0].offsetWidth + 'px';
+
+  //如果参数是个节点对象，那么参数以$开头
+  $$tabItems.forEach($tab => {                                        //给每个tab-item加上点击事件
+    $tab.onclick = function () {
+      $$tabItems.forEach($tab => $tab.classList.remove('active'));    //当点击时，去除所有item上的active样式
+      this.classList.add('active');                                   //this代表被点击的tab-item,给被点击的tab-item加上active样式
+
+      // console.log(this);
+      // console.log(this.offsetLeft);
+      // console.log(this.offsetWidth);
+
+      //给移动线设置宽度和水平位移的距离
+      $line.style.width = this.offsetWidth + 'px';
+      $line.style.transform = `translateX(${this.offsetLeft}px)`;
+
+      //将tab-item的NodeList类数组对象通过[...arg]变成数组，再通过indexOf()方法获取每个tab-item的索引
+      let index = [...$$tabItems].indexOf(this);
+
+      //当点击时，去除所有item上的active样式                      
+      $$tabPanels.forEach($panel => $panel.classList.remove('active')); 
+
+      //将被点击的tab-item的索引index给tab-panel的NodeList，使相应的tab-panel加上active样式，使其显示效果
+      $$tabPanels[index].classList.add('active');          
+    }
+  })
+
+</script>
+
+</html>
+<!--
+
+JS的思路：语义描述:1.当点击的时候加上active的效果，邻居去除样式
+                 2.显示相应的面板，点第几个选项显示第几个面板
+
+💡-使用 offsetLeft 和 offsetWidth 时需要给元素添加相对定位
+
+💡 -给重复的代码设为一个简便的变量表示(let $$ = ...)
+
+💡 -常用的函数设置成同一标准的符号表示(let $ = 函数)
+
+💡 -用到啥回忆一下学的相关知识 
+
+💡 -使用箭头函数
+
+💡 -当要初始化的流程封装成方法，加入构造函数中
+
+💡 -选项卡这个小项目的逻辑：面向过程到面向对象
+
+💡
+
+💡
+
+💡
+
+？-滑动效果如何做？
+  --绝对定位加offsetLeft
+
+？-当拥有多个选项卡的时候，相互影响怎么办？
+  --将选项卡功能封装成class
+
+？-...类数组对象
+
+？-当函数中出现多个this，但每个this不同或改变了，如何处理？
+
+
+-->
