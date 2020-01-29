@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Tab选项卡</title>
+</head>
+<style>
+  .container {
+    margin: 30px auto;
+    padding: 20px;
+    max-width: 800px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.8);
+  }
+
+  .tab-header {
+    position: relative;
+    display: flex;
+    margin-bottom: 15px;
+    line-height: 30px;
+    font-size: 13px;
+    font-weight: 1000;
+    color: rgba(20, 20, 20, 1);
+    border-bottom: 3px solid rgba(200, 200, 200, 1);
+  }
+
+  .tab-header .tab-item {
+    margin-right: 40px;
+    margin-bottom: -3px;
+    cursor: pointer;
+  }
+
+  .tab-header .tab-item.active {
+    color: rgba(0, 150, 255, 0.8);
+  }
+
+  .tab-header .line {
+    position: absolute;
+    top: 100%;
+    width: 50px;
+    height: 3px;
+    transform: translateX();
+    transition: all .4s;
+    background-color: rgba(0, 150, 255, 0.8);
+  }
+
+  .tab-content .tab-panel {
+    display: none;
+    margin: 15px auto;
+    font-size: 15px;
+  }
+
+  .tab-content .tab-panel.active {
+    display: block;
+  }
+</style>
+
+<body>
+  <div class="container">
+    <h2>Tab选项卡1</h2>
+    <div class="tabs">
+      <div class="tab-header">
+        <span class="tab-item active">用户管理</span>
+        <span class="tab-item">配置管理</span>
+        <span class="tab-item">角色管理</span>
+        <span class="tab-item">定时任务</span>
+        <span class="line"></span>
+      </div>
+      <div class="tab-content">
+        <div class="tab-panel active">用户管理</div>
+        <div class="tab-panel">配置管理</div>
+        <div class="tab-panel">角色管理</div>
+        <div class="tab-panel">定时任务</div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <h2>Tab选项卡2</h2>
+    <div class="tabs">
+      <div class="tab-header">
+        <span class="tab-item active">用户管理</span>
+        <span class="tab-item">配置管理</span>
+        <span class="tab-item">角色管理</span>
+        <span class="tab-item">定时任务</span>
+        <span class="line"></span>
+      </div>
+      <div class="tab-content">
+        <div class="tab-panel active">用户管理</div>
+        <div class="tab-panel">配置管理</div>
+        <div class="tab-panel">角色管理</div>
+        <div class="tab-panel">定时任务</div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+
+  //面对对象写法
+  class Tabs {
+    //构造函数
+    constructor($container) {
+      this.$container = $container;
+      this.$$tabItems = $container.querySelectorAll('.tab-item');
+      this.$$tabPanels = $container.querySelectorAll('.tab-panel');
+      this.$line = $container.querySelector('.line');
+
+      this.init();
+      this.bind();
+    }
+    //初始化
+    init() {
+      //保证一开始的宽度正确
+      this.$line.style.width = this.$$tabItems[0].offsetWidth + 'px';
+    }
+    bind() {
+      //这里的this代表的是$container
+      let self = this;
+      self.$$tabItems.forEach($tab => {                                        //给每个tab-item加上点击事件
+        //如果使用this.$tab,那么this代表的是当前$tab本身
+        $tab.onclick = function () {
+           //当点击时，去除所有item上的active样式
+          self.$$tabItems.forEach($tab => $tab.classList.remove('active'));   
+           //this代表被点击的tab-item,给被点击的tab-item加上active样式
+          this.classList.add('active');
+
+          self.$line.style.width = this.offsetWidth + 'px';
+          self.$line.style.transform = `translateX(${this.offsetLeft}px)`;
+
+          //将tab-item的NodeList类数组对象通过[...arg]变成数组，再通过indexOf()方法获取每个tab-item的索引
+          let index = [...self.$$tabItems].indexOf(this);
+          //当点击时，去除所有item上的active样式                      
+          self.$$tabPanels.forEach($panel => $panel.classList.remove('active')); 
+          //将被点击的tab-item的索引index给tab-panel的NodeList，使相应的tab-panel加上active样式，使其显示效果
+          self.$$tabPanels[index].classList.add('active');          
+        }
+      })
+    }
+  }
+
+document.querySelectorAll('.tabs').forEach($container => new Tabs($container));
+
+//常见一个新的选项卡对象
+// new Tabs(document.querySelectorAll('.tabs')[0]);
+// new Tabs(document.querySelectorAll('.tabs')[1]);
+
+
+</script>
+</html>
+<!--
+  需要注意的
+  ⚠：this的变化：
+  在Tabs中，this代表的是即将实例化的对象
+  在 $tab.onclick = function () {}函数中，this代表的是绑定事件的dom元素$tab
+-->
+

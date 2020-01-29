@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Collapse折叠面板</title>
+</head>
+<style>
+.container {
+  margin: 30px auto;
+  padding: 10px;
+  max-width: 800px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 8px rgba(200, 200, 200, 0.8);
+}
+
+.collapse {
+  font-size: 13px;
+}
+
+.collapse .item{
+  border-top: 1px solid rgba(200, 200, 200, 0.8);
+  cursor: pointer;
+}
+
+/* A (AB) */
+.collapse .item:last-child{
+  border-bottom: 1px solid rgba(200, 200, 200, 0.8);
+}
+
+.collapse .item-header {
+  display: flex;
+  align-items: center;
+  line-height: 40px; /*一行居中的效果*/
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* 箭头效果 */
+.collapse .item-header::after {
+  content: '';
+  display: block;
+  margin-left: auto; /* display:flex + margin - left/right/top/bottom 能达到各种偏移效果 */
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid #303030;
+  border-right: 2px solid #303030;
+  transform: rotate(45deg);
+}
+
+/* 点击后箭头向下效果 */
+.collapse .item.active .item-header::after {
+  transform: rotate(135deg);
+  transition: all .8s;
+}
+
+.collapse .item-content {
+  line-height: 24px;
+  height: 0; /* 因为要有下拉的效果，所以没有使用改变 display属性的方式*/
+  overflow: hidden;
+  transition: all .8s; /* 控制height变化的时间，达到下拉的效果*/
+}
+
+/* 页面一开始展现的效果 */
+.collapse .item.active .item-content {
+  height: auto;
+  padding-bottom: 16px; /*为什么加了这个就有下拉的效果*/
+}
+</style>
+<body>
+  <div class="container">
+    <h2>Collapse折叠面板</h2>
+    <div class="collapse">
+      <div class="item active">
+        <div class="item-header">Michael Jordan</div>
+        <div class="item-content">迈克尔·乔丹（Michael Jordan），1963年2月17日生于美国纽约布鲁克林，前美国职业篮球运动员，司职得分后卫，绰号“飞人”（Air Jordan）</div>
+      </div>
+      <div class="item">
+        <div class="item-header">Kobe Bean Bryant</div>
+        <div class="item-content">科比·比恩·布莱恩特（Kobe Bean Bryant，1978年8月23日—2020年1月26日），出生于美国宾夕法尼亚州费城，美国前职业篮球运动员，司职得分后卫/小前锋（锋卫摇摆人），绰号“黑曼巴”/“小飞侠”，前NBA球员乔·布莱恩特的儿子。</div>
+      </div>
+      <div class="item">
+        <div class="item-header">LeBron James</div>
+        <div class="item-content">勒布朗·詹姆斯（LeBron James），1984年12月30日出生于美国俄亥俄州阿克伦（Akron, Ohio），美国职业篮球运动员，司职小前锋，绰号“小皇帝”，效力于NBA洛杉矶湖人队。</div>
+      </div>
+      <div class="item">
+        <div class="item-header">Vince Carter</div>
+        <div class="item-content">文斯·卡特（Vince Carter），1977年1月26日出生于美国佛罗里达州代顿海滩市，美国职业篮球运动员，司职得分后卫/小前锋，效力于NBA亚特兰大老鹰队 ，因华丽的扣篮动作而绰号“UFO”/“半人半神”，是NBA名副其实的扣篮王。</div>
+      </div>
+    </div>  
+</div>
+<div class="container">
+  <h2>Collapse折叠面板</h2>
+  <div class="collapse">
+    <div class="item active">
+      <div class="item-header">Michael Jordan</div>
+      <div class="item-content">迈克尔·乔丹（Michael Jordan），1963年2月17日生于美国纽约布鲁克林，前美国职业篮球运动员，司职得分后卫，绰号“飞人”（Air Jordan）</div>
+    </div>
+    <div class="item">
+      <div class="item-header">Kobe Bean Bryant</div>
+      <div class="item-content">科比·比恩·布莱恩特（Kobe Bean Bryant，1978年8月23日—2020年1月26日），出生于美国宾夕法尼亚州费城，美国前职业篮球运动员，司职得分后卫/小前锋（锋卫摇摆人），绰号“黑曼巴”/“小飞侠”，前NBA球员乔·布莱恩特的儿子。</div>
+    </div>
+    <div class="item">
+      <div class="item-header">LeBron James</div>
+      <div class="item-content">勒布朗·詹姆斯（LeBron James），1984年12月30日出生于美国俄亥俄州阿克伦（Akron, Ohio），美国职业篮球运动员，司职小前锋，绰号“小皇帝”，效力于NBA洛杉矶湖人队。</div>
+    </div>
+    <div class="item">
+      <div class="item-header">Vince Carter</div>
+      <div class="item-content">文斯·卡特（Vince Carter），1977年1月26日出生于美国佛罗里达州代顿海滩市，美国职业篮球运动员，司职得分后卫/小前锋，效力于NBA亚特兰大老鹰队 ，因华丽的扣篮动作而绰号“UFO”/“半人半神”，是NBA名副其实的扣篮王。</div>
+    </div>
+  </div>  
+<script>
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+
+  class Collapse {
+    constructor($container){
+      //获取所要用的对象
+      this.$container = $container;
+      this.$$items = $container.querySelectorAll('.item');
+      
+      //完成初始化和该执行的效果
+      this.init();
+      this.bind();
+    }
+    //init --- 初始化
+    init(){
+
+    }
+    //bind --- 捆绑，装订
+    bind(){
+      //this为什么会发生变化，因为其作用域变了
+      //this表示Collapse的实例
+      const self = this;
+      //this表示点击的DOM元素,Collapse的实例，因为作用域没有变化，所以这两个this没变
+      this.$$items.forEach($item => {
+        //语法环境变了，this表示你点击的那个div元素？
+        $item.onclick = function(){
+          self.$$items.forEach($item => $item.classList.remove('active'));
+          //this表示当前点的div元素
+          this.classList.add('active');
+        }
+      });
+    }
+  }
+
+  new Collapse(document.querySelectorAll('.container')[0]);
+  new Collapse(document.querySelectorAll('.container')[1]);
+
+</script>
+</body>
+
+</html>
