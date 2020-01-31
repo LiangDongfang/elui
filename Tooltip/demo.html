@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Tooltip</title>
+  <style>
+    .container {
+      margin: 30px auto;
+      padding: 10px;
+      max-width: 800px;
+      box-shadow: 1px 1px 8px #ccc;
+    }
+
+    .btn-group .button {
+      position: relative;
+      margin-right: 8px;
+      padding: 5px;
+      outline: none;
+      border: 1px solid;
+      border-radius: 3px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn-group .button:hover {
+      background-color: purple;
+      color: gold;
+    }
+
+    .tooltip {
+      position: absolute;
+      z-index: 10;
+      padding: 3px 5px;
+      background-color:#000;
+      color: #fff;
+      white-space: nowrap;
+      display: none;
+    }
+
+    .tooltip::before {
+      content: '';
+      position: absolute;
+      border: 5px solid transparent;
+    }
+
+    /* calc - 计算 transform - 变换 translate - 翻译，转化 */
+    .tooltip.top {
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .tooltip.top::before{
+      top: 100%;
+      left: 50%;
+      transform: translate(-50%);
+      border-top-color: #000;
+    }
+
+    .tooltip.bottom {
+      top: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .tooltip.bottom::before {
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-bottom-color: #000;
+    }
+
+    .tooltip.left {
+      top: 50%;
+      right: calc(100% + 10px);
+      transform: translateY(-50%);
+    }
+    .tooltip.left::before {
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      border-left-color: #000;
+    }
+
+    .tooltip.right {
+      top: 50%;
+      left: calc(100% + 10px);
+      transform: translateY(-50%);
+    }
+
+    .tooltip.right::before {
+      top: 50%;
+      right: 100%;
+      transform: translateY(-50%);
+      border-right-color: #000;
+    }
+
+    .show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Tooltip提示</h2>
+    <div class="btn-group">
+      <button class="button" id="btn-top" data-name="tooltip" data-align="top" data-text="我的上面">上</button>
+      <button class="button" id="btn-bottom" data-name="tooltip" data-align="bottom" data-text="我的下面">下</button>
+      <button class="button" id="btn-left" data-name="tooltip" data-align="left" data-text="我的左面">左</button>
+      <button class="button" id="btn-right" data-name="tooltip" data-align="right" data-text="我的右面">右</button>
+    </div>
+  </div>
+
+  <script>
+    class Tooltip{
+      constructor($root){
+        this.$root = $root;
+        this.$root.tooltip = this; //这里定义了tooltip
+        this.align =  $root.dataset.align; //得到位置
+        this.text = $root.dataset.text; //得到文本
+
+        this.render();
+        this.setRoot();
+        this.show();
+      }
+
+      render(){
+        let $tooltip = document.createElement('div');
+        $tooltip.classList.add('tooltip');
+        $tooltip.classList.add(this.align); // ?> 为什么要加这个class
+        $tooltip.innerText = this.text;
+        console.log(this)
+        this.$tooltip = $tooltip // ?> 什么意思？
+
+        // !>将创建的tooltip框放在元素的内部展示，否则位置太难确认
+        this.$root.appendChild(this.$tooltip);
+      }
+
+      setRoot(){
+        //将实例this传给show中的this
+        this.$root.showTooltip = this.show.bind(this);
+        this.$root.hideTooltip = this.hide.bind(this);
+      }
+
+      show(){
+        this.$tooltip.classList.add('show');
+      }
+
+      hide(){
+        this.$tooltip.classList.remove('show');
+      }
+    }
+
+    //给需要显示tooltip的元素添加事件
+    document.querySelectorAll('[data-name="tooltip"]').forEach($node => {
+      $node.onmouseenter = function(){
+        if($node.tooltip) { // ?> tooltip是哪里定义的
+          // !>this表示$node
+          this.showTooltip(); // ?> showTooltip是哪里定义的 ?>
+        }else{
+          new Tooltip(this);
+        }
+      }
+      $node.onmouseleave = function(){
+        this.hideTooltip();
+      }
+    });
+  </script>
+
+</body>
+<!--
+💡 -- 如何控制哪些元素显示tooltip：给元素添加data-name data-align data-text属性，有这些属性的，就是要显示tooltip
+
+
+
+-->
+</html>
