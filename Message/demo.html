@@ -5,19 +5,159 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1534586_3r1jnv3ofok.css">
+  <title>Message</title>
 </head>
+<style>
+  .container {
+    margin: 30px auto;
+    padding: 10px;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(200, 200, 200 , 0.8);
+  }
 
+  .btn-group .button {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 810;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .btn-group .button:hover {
+    border: 1px solid white;
+    color: purple;
+    background: gold
+  }
+
+  .message {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    top: 10px;
+    left: 50%;
+    transform: translate(-50%, -50px);
+    padding: 8px;
+    border-radius: 8px;
+
+    /*达到显示的效果*/
+    opacity: 0;
+    transition: all .2s;
+  }
+
+  .message .iconfont {
+    margin-right: 8px;
+  }
+
+  .message.show {
+    transform: translate(-50%, 10px);
+    opacity: 1;
+  }
+
+  .message.success{
+    background-color: greenyellow ;
+  }
+  .message.warning{
+    background-color: yellow;
+}
+  .message.info{
+    background-color: skyblue;
+}
+  .message.error{
+    background-color: red;
+}
+</style>
 <body>
+<div class="container">
+  <h2>Message消息提示</h2>
+  <div class="btn-group">
+    <button class="button" id="btn-success">成功</button>
+    <button class="button" id="btn-warning">警告</button>
+    <button class="button" id="btn-info">消息</button>
+    <button class="button" id="btn-error">错误</button>
+  </div>
+</div>
+
+<script>
+  class Message {
+    /*老的写法：
+    constructor(option) {
+      this.type = option.type || "success";
+      this.text = option.text || "";
+    }
+    */
+    //ES6的写法，设置默认值
+    constructor({type = 'success', text = ''}) {
+      this.type = type;
+      this.text = text;
+      
+      this.render();
+      this.bind();
+    }
+     
+    render() {
+      //创建message提示框，创建一个div
+      let $div = document.createElement('div');
+      //平白无故的this.$message这个变量哪里来的？
+      this.$message = $div;
+      $div.classList.add('message');
+      $div.classList.add(this.type);
+      //创建span添加自定义图标
+      let $icon = document.createElement('span');
+      $icon.classList.add('iconfont');
+      $icon.classList.add('icon-' + this.type);
+      $div.appendChild($icon);
+      //创建文本节点
+      let $text = document.createTextNode(this.text);
+      $div.appendChild($text);
+      document.body.appendChild(this.$message);
+    }
+
+    bind() {
+       //直接写show()达不到效果？因为：JS会自己优化，在创建DOM的时候立刻就执形了show,直接添加了样式
+       //如果有show(),就直接实现了，不会依次区执行。
+       //延迟show()的执行
+       setTimeout(() => this.show(),0);
+       setTimeout(() => this.destory(), 3000);
+    }
+
+     //尽量不要再JS里面改变定义好的css样式，可以通过添加样式
+    show() {
+      this.$message.classList.add('show');
+    }
+     
+    destory() {
+       this.$message.classList.remove('show');
+       setTimeout(() => this.$message.parentNode.removeChild(this.$message) , 3000);
+    }
+  }
+
+document.querySelector('#btn-success').onclick = function(){
+  new Message({type:'success',text: '成功'});
+}
+document.querySelector('#btn-warning').onclick = function(){
+  new Message({type:'warning',text: '警告'});
+}
+document.querySelector('#btn-info').onclick = function(){
+  new Message({type:'info',text: '消息'});
+}
+document.querySelector('#btn-error').onclick = function(){
+  new Message({type:'error', text: '错误'});
+}
+
+</script>
 
 </body>
 <!--
 
 💡 -- 修改效果 使用JS取操作定义好的class
 💡 -- 箭头函数的this和function中的this不同在哪里？
-💡
-💡
-💡
+💡 -- Message不需要写消息提示的页面结构，直接通过Js来控制提示框的生成和消失
+💡 -- 构造时以对象作为传递参数，方便识别类型和内容：{type:'success',text:'成功'}
+💡 -- 尽量不要在JS里操作CSS样式，通过JS来给对象添加样式从而达到改变样式的效果，这样的好处是当需要修改样式时，只要修改css即可，不用都修改了。
 💡
 💡
 💡
